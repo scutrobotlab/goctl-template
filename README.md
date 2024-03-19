@@ -16,6 +16,18 @@ goctl template init --home .
 
 ## 使用
 
+Remote
+
 ```shell
-goctl api go --api user.api --remote github.com/scutrobotlab/goctl-template --dir .
+goctl api go --api user.api --remote https://github.com/scutrobotlab/goctl-template --dir .
+```
+
+Home
+
+```shell
+git clone https://github.com/scutrobotlab/goctl-template.git
+```
+
+```shell
+goctl api go --api user.api --home goctl-template --dir .
 ```
