@@ -71,7 +71,8 @@ func wrapBaseResponse(v any) (int, BaseResponse[any]) {
 		statusCode = http.StatusInternalServerError // 500
 	case codes.Unauthenticated: // 16
 		statusCode = http.StatusUnauthorized // 401
-	case codes.Canceled, // 1
+	case
+		codes.Canceled,          // 1
 		codes.DeadlineExceeded,  // 4
 		codes.AlreadyExists,     // 6
 		codes.ResourceExhausted, // 8
