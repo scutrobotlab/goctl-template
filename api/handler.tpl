@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	{{if .HasRequest}}"github.com/zeromicro/go-zero/rest/httpx"{{end}}
-	xhttp "github.com/zeromicro/x/http"
+	http2 "github.com/scutrobotlab/goctl-template/src/http"
 	{{.ImportPackages}}
 )
 
@@ -19,9 +19,9 @@ func {{.HandlerName}}(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		{{end}}l := {{.LogicName}}.New{{.LogicType}}(r.Context(), svcCtx)
 		{{if .HasResp}}resp, {{end}}err := l.{{.Call}}({{if .HasRequest}}&req{{end}})
 		if err != nil {
-			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
+			http2.JsonBaseResponseCtx(r.Context(), w, err)
 		} else {
-			{{if .HasResp}}xhttp.JsonBaseResponseCtx(r.Context(), w, resp){{else}}xhttp.JsonBaseResponseCtx(r.Context(), w, nil){{end}}
+			{{if .HasResp}}http2.JsonBaseResponseCtx(r.Context(), w, resp){{else}}http2.JsonBaseResponseCtx(r.Context(), w, nil){{end}}
 		}
 	}
 }
