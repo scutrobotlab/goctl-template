@@ -2,8 +2,10 @@ package http
 
 import (
 	"context"
+	"errors"
+
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"github.com/zeromicro/x/errors"
+	errors2 "github.com/zeromicro/x/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"net/http"
@@ -28,20 +30,19 @@ func JsonBaseResponseCtx(ctx context.Context, w http.ResponseWriter, v any) {
 
 func wrapBaseResponse(v any) (int, BaseResponse[any]) {
 	var resp BaseResponse[any]
-	switch data := v.(type) {
-	case *errors.CodeMsg:
-		resp.Code = data.Code
-		resp.Msg = data.Msg
-	case errors.CodeMsg:
-		resp.Code = data.Code
-		resp.Msg = data.Msg
-	case *status.Status:
-		resp.Code = int(data.Code())
-		resp.Msg = data.Message()
-	case error:
-		resp.Code = BusinessCodeError
-		resp.Msg = data.Error()
-	default:
+	if err, ok := v.(error); ok {
+		var codeMsg *errors2.CodeMsg
+		if errors.As(err, &codeMsg) {
+			resp.Code = codeMsg.Code
+			resp.Msg = codeMsg.Msg
+		} else if grpcStatus, ok := status.FromError(err); ok {
+			resp.Code = int(grpcStatus.Code())
+			resp.Msg = grpcStatus.Message()
+		} else {
+			resp.Code = BusinessCodeError
+			resp.Msg = err.Error()
+		}
+	} else {
 		resp.Code = BusinessCodeOK
 		resp.Msg = BusinessMsgOk
 		resp.Data = v
