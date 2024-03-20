@@ -16,6 +16,11 @@ goctl template init --home .
 
 ## 使用
 
+Go Get
+```shell
+go get github.com/scutrobotlab/goctl-template
+```
+
 Remote
 
 ```shell
