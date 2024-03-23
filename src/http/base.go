@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	errors2 "github.com/zeromicro/x/errors"
 	"google.golang.org/grpc/codes"
@@ -48,41 +49,5 @@ func wrapBaseResponse(v any) (int, BaseResponse[any]) {
 		resp.Data = v
 	}
 
-	var statusCode int
-	switch codes.Code(resp.Code) {
-	case codes.OK: // 0
-		statusCode = http.StatusOK // 200
-	case codes.Unknown: // 2
-		statusCode = http.StatusInternalServerError // 500
-	case codes.InvalidArgument: // 3
-		statusCode = http.StatusBadRequest // 400
-	case codes.NotFound: // 5
-		statusCode = http.StatusNotFound // 404
-	case codes.PermissionDenied: // 7
-		statusCode = http.StatusForbidden // 403
-	case codes.FailedPrecondition: // 9
-		statusCode = http.StatusPreconditionFailed // 412
-	case codes.Unimplemented: // 12
-		statusCode = http.StatusNotImplemented // 501
-	case codes.Internal: // 13
-		statusCode = http.StatusInternalServerError // 500
-	case codes.Unavailable: // 14
-		statusCode = http.StatusServiceUnavailable // 503
-	case codes.DataLoss: // 15
-		statusCode = http.StatusInternalServerError // 500
-	case codes.Unauthenticated: // 16
-		statusCode = http.StatusUnauthorized // 401
-	case
-		codes.Canceled,          // 1
-		codes.DeadlineExceeded,  // 4
-		codes.AlreadyExists,     // 6
-		codes.ResourceExhausted, // 8
-		codes.Aborted,           // 10
-		codes.OutOfRange:        // 11
-		statusCode = http.StatusInternalServerError // 500
-	default:
-		statusCode = http.StatusOK // 200
-	}
-
-	return statusCode, resp
+	return runtime.HTTPStatusFromCode(codes.Code(resp.Code)), resp
 }
